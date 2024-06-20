@@ -1,0 +1,1 @@
+export const BACKEND_URL="https://medium-2.akshayamohan-2401.workers.dev"
