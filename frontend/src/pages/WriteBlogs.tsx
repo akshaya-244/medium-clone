@@ -3,7 +3,7 @@ import { AppBar } from "../components/AppBar"
 import { BACKEND_URL } from "../config"
 import { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { RichText } from "./RichText";
+// import { RichText } from "./RichText";
 
 export const WriteBlogs = () => {
     const [title, setTitle]=useState("");
