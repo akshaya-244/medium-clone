@@ -95,7 +95,7 @@ return c.json({
 })
 })
 
-//Ypu should ideally do a pagination
+//Ypu should ideally do a paginationxx
 blogRouter.get('/bulk', async(c) => {
     const prisma=new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL
