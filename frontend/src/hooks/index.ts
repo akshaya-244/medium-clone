@@ -11,6 +11,7 @@ export interface Blog{
     "author": {
         "name": string
     }
+    "publishedDate": string
 
 }
 

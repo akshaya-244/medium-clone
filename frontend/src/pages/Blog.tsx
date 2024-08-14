@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import { BlogExtension } from "../components/BlogExtension";
 import { useBlog } from "../hooks"
 import { Skeleton } from "./Skeleton";
@@ -9,6 +9,12 @@ export const Blog = () => {
     const {loading, blog}=useBlog({
         id: id || ""
     });
+
+    // const location=useLocation();
+    // const {name}=location.state || {};
+
+
+
 
     if(loading || !blog ){
         return<div>

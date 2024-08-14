@@ -1,14 +1,25 @@
 import axios from "axios"
 import { AppBar } from "../components/AppBar"
 import { BACKEND_URL } from "../config"
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { RichText } from "./RichText";
 
 export const WriteBlogs = () => {
-    const [title, setTitle]=useState("");
-    const [description, setDescription]=useState("");
-    const navigate=useNavigate();
+
+
+   
+
+    
+    
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const navigate = useNavigate();
+    const today = new Date();
+    const date = today.getDate();
+    const month = today.getMonth() + 1; // Months are zero-indexed, so add 1
+    const year = today.getFullYear();
+    const publishedDate = `${month}/${date}/${year}`;
     return <div>
         <AppBar />
         <div className="flex justify-center w-full">
@@ -18,45 +29,64 @@ export const WriteBlogs = () => {
                 }} id="message" rows={1} className="block p-2.5  w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 
             focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 "
                     placeholder="Title"></textarea>
-                    <div className="pt-8">
-                    <TextEditor onChange={(e) => {setDescription(e.target.value)}}/>
+                <div className="pt-8">
+                    <TextEditor onChange={(e) => { setDescription(e.target.value) }} />
                     <button type="submit" onClick={async () => {
-                        const response=await axios.post(`${BACKEND_URL}/api/v1/blog`,{
+                        const response = await axios.post(`${BACKEND_URL}/api/v1/blog`, {
                             title,
-                            content: description
-                        },{
+                            content: description,
+                            publishedDate: publishedDate
+                        }, {
                             headers: {
                                 Authorization: localStorage.getItem("token")
                             }
                         });
 
                         navigate(`/blog/${response.data.id}`)
-                    }}  className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-            Publish post
-        </button>
-        {/* <RichText /> */}
-                    </div>
+                    }} className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                        Publish post
+                    </button>
+                    {/* <RichText /> */}
+                </div>
             </div>
-           
+
         </div>
-        
+
     </div>
 }
 
-function TextEditor({onChange}: {onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void}) {
+function TextEditor({ onChange }: { onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void }) {
+    const inputRef = useRef<HTMLInputElement | null>(null);
 
 
+    const handleButtonClick =(e: React.MouseEvent<HTMLButtonElement>)=> {
+        e.preventDefault();
+        if (!inputRef || !inputRef.current) return;
+    
+        inputRef.current.click();
+      }
+      const handleFileUpload =(e: React.ChangeEvent<HTMLInputElement>)=> {
+        const files = e.target.files;
+        if (!files) return;
+    
+        const file = files[0];
+    
+        // use the file
+        console.log(file.name);
+      }
     return <div>
         <div className="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
             <div className="flex items-center justify-between px-3 py-2 border-b dark:border-gray-600">
                 <div className="flex flex-wrap items-center divide-gray-200 sm:divide-x sm:rtl:divide-x-reverse dark:divide-gray-600">
                     <div className="flex items-center space-x-1 rtl:space-x-reverse sm:pe-4">
-                        <button type="button" className="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                        <button type="button" onClick={handleButtonClick} className="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
                             <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 20">
                                 <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6" />
                             </svg>
                             <span className="sr-only">Attach file</span>
+
                         </button>
+                        <input ref={inputRef} type='file' hidden onChange={handleFileUpload} />
                         <button type="button" className="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
                             <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
                                 <path d="M8 0a7.992 7.992 0 0 0-6.583 12.535 1 1 0 0 0 .12.183l.12.146c.112.145.227.285.326.4l5.245 6.374a1 1 0 0 0 1.545-.003l5.092-6.205c.206-.222.4-.455.578-.7l.127-.155a.934.934 0 0 0 .122-.192A8.001 8.001 0 0 0 8 0Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" />
@@ -69,7 +99,7 @@ function TextEditor({onChange}: {onChange: (e: ChangeEvent<HTMLTextAreaElement>)
                                 <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
                             </svg>
                             <span className="sr-only">Upload image</span>
-                            
+
                         </button>
                         <button type="button" className="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
                             <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
@@ -126,11 +156,11 @@ function TextEditor({onChange}: {onChange: (e: ChangeEvent<HTMLTextAreaElement>)
                 </div>
             </div>
             <div className="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
-                <label  className="sr-only">Publish post</label>
+                <label className="sr-only">Publish post</label>
                 <textarea onChange={onChange} id="editor" rows={8} className="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="Write an article..." required ></textarea>
             </div>
         </div>
-       
+
     </div>
 
 }

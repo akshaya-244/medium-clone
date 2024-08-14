@@ -26,14 +26,15 @@ export type SigninInput=z.infer<typeof signinInput>
 
 export const createBlogInput=z.object({
     title: z.string(),
-    content: z.string()
+    content: z.string(),
+    publishedDate:z.string()
 })
 export type CreateBlogInput=z.infer<typeof createBlogInput>
 
 export const updateBlogInput=z.object({
     title: z.string(),
     content: z.string(),
-    id: z.number()
+    id: z.number(),
 
 })
 export type UpdateBlogInput=z.infer<typeof updateBlogInput>

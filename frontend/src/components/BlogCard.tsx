@@ -22,9 +22,9 @@ export const BlogCard = ({
         <div className="pl-4 p-4 w-screen max-w-screen-lg cursor-pointer" >
         <div >
 
-           <Avatar name={authorName} /> {authorName} . {publishedDate}
+           <div className="flex font-bold mr-4"> <Avatar name={authorName} /> {authorName}  {publishedDate}</div> 
         </div>
-        <div className="font-bold text-2xl"> 
+        <div className="font-bold text-2xl text-blue-700"> 
             {title}
         </div>
         <div className="font-thin text-md">
@@ -53,7 +53,7 @@ function findOutSpace({name} : {name: string})
 export function Avatar({name} : {name: string})
 {
     const spaceIndex=findOutSpace({name})
-    return <div className="relative inline-flex items-center justify-center w-8 h-8 overflow-hidden bg-gray-300 rounded-full dark:bg-gray-600">
+    return <div className="mr-2 relative font-bold inline-flex items-center justify-center w-8 h-8 overflow-hidden bg-gray-300 rounded-full dark:bg-gray-600">
     <span className="font-medium text-gray-600 dark:text-gray-300">{spaceIndex != -1 ? name[0] + name[spaceIndex + 1] : name[0]}</span>
 </div>
 }

@@ -63,7 +63,8 @@ blogRouter.post('/',async (c) => {
         data: {
             title: body.title,
             content: body.content,
-            authorId: Number(userId)
+            authorId: Number(userId),
+            publishedDate: body.publishedDate
         }
     })
 
@@ -71,6 +72,7 @@ blogRouter.post('/',async (c) => {
         id: blog.id
     })
   })
+
 
 blogRouter.put('/', async(c) => {
     const body=await c.req.json();
@@ -84,7 +86,7 @@ blogRouter.put('/', async(c) => {
         },
         data: {
             title: body.title,
-            content: body.content
+            content: body.content,
         }
         
     })
@@ -108,7 +110,8 @@ blogRouter.get('/bulk', async(c) => {
                 select: {
                     name: true
                 }
-            }
+            },
+            publishedDate:true
         }
     });
 
@@ -118,6 +121,27 @@ blogRouter.get('/bulk', async(c) => {
         blogs
     })
 })
+
+blogRouter.delete('/bulkdelete', async(c) => {
+    const prisma=new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL
+    }).$extends(withAccelerate())
+
+    const blogs= await prisma.blog.deleteMany({
+        where:{
+            title: {
+                not: ''
+            }
+                }
+    });
+
+    
+
+    return c.json({
+        msg:"Deleted"
+    })
+})
+
 blogRouter.get('/:id', async(c) => {
     const id=c.req.param("id")
     const prisma=new PrismaClient({
@@ -136,7 +160,8 @@ blogRouter.get('/:id', async(c) => {
                 select: {
                     name: true
                 }
-            }
+            },
+            publishedDate: true
         }
     })
     return c.json({
@@ -144,5 +169,21 @@ blogRouter.get('/:id', async(c) => {
     })
 })
 
+blogRouter.delete('/:id',async(c) => {
+    const id=c.req.param("id")
+    const prisma=new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL
+    }).$extends(withAccelerate())
+    const userId=c.get("userId")
+    const blog=await prisma.blog.delete({
+        where: {
+            id: Number(id)
+        },
+        
+    })
+    return c.json({
+        blog
+    })
+})
 
   

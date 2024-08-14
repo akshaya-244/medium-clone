@@ -39,7 +39,9 @@ userRouter.post('/signup', async(c) => {
     })
    
     const jwt=await sign({
-      id: user.id
+      id: user.id,
+      name: user.name,
+      username:user.username
     }, c.env.JWT_SECRET)
     return c.text(jwt)
     }
@@ -63,6 +65,10 @@ userRouter.post('/signup', async(c) => {
         where: {
           username: body.username,
           password: body.password,
+        }, select :{
+          id: true, 
+          name: true,
+          username:true
         }
       })
       if(!user){
@@ -70,7 +76,9 @@ userRouter.post('/signup', async(c) => {
         return c.text("Not Found")
       }
       const jwt=await sign({
-        id: user.id
+        id: user.id,
+        username:user.username,
+        name : user.name
       }, c.env.JWT_SECRET)
   
       return c.text(jwt)
@@ -83,4 +91,5 @@ userRouter.post('/signup', async(c) => {
     }
     
   })
+  
   
